@@ -14,15 +14,38 @@ import productRoutes from './routes/productRoutes.js';
 import offerRoutes from './routes/offerRoutes.js';
 import locationRoutes from './routes/locationRoutes.js';
 
+// Load environment variables
 dotenv.config();
+
+// Connect to MongoDB
 connectDB();
 
+// Initialize app
 const app = express();
 
+// Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:5173', // local frontend dev
+  'https://supermallwebappbypranay.netlify.app', // deployed Netlify frontend
+];
+
+// CORS middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS policy blocked this origin: ' + origin));
+      }
+    },
+    credentials: true,
+  })
+);
+
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(logRequests); // Custom logging middleware
+app.use(express.json()); // to parse JSON request bodies
+app.use(logRequests);    // custom logging middleware
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -31,11 +54,11 @@ app.use('/api/products', productRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/locations', locationRoutes);
 
-// Error handling
+// Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
 
-// Export app for testing
+// Server listen
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== 'test') {

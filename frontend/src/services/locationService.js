@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const API_URL = '/api/locations';
+const API = import.meta.env.VITE_API_BASE_URL;
 
-export const getAllLocations = async () => {
-  const { data } = await axios.get(API_URL);
+export const getLocations = async () => {
+  const { data } = await axios.get(`${API}/locations`);
   return data;
 };
+
 
 export const createLocation = async (locationData, token) => {
   const { data } = await axios.post(API_URL, locationData, {

@@ -1,10 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(() =>
     localStorage.getItem('userInfo')
       ? JSON.parse(localStorage.getItem('userInfo'))
@@ -14,13 +12,11 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     localStorage.setItem('userInfo', JSON.stringify(userData));
     setUser(userData);
-    navigate('/dashboard');
   };
 
   const logout = () => {
     localStorage.removeItem('userInfo');
     setUser(null);
-    navigate('/login');
   };
 
   useEffect(() => {

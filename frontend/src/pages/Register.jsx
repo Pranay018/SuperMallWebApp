@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import useAuth from '../hooks/useAuth';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,28 +12,29 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleRegister = async (e) => {
-  e.preventDefault();
-  setError('');
-  try {
-    const API = import.meta.env.VITE_API_BASE_URL;
-    const { data } = await axios.post(`${API}/auth/register`, formData);
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    navigate('/dashboard');
-  } catch (err) {
-    setError(err.response?.data?.message || 'Registration failed');
-  }
-};
+    e.preventDefault();
+    setError('');
+    try {
+      const API = import.meta.env.VITE_API_BASE_URL;
+      const { data } = await axios.post(`${API}/auth/register`, formData);
+      login(data); // set user in context
+      navigate('/dashboard'); // navigate after register
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
+  };
 
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
       style={{
-       backgroundImage: "url('/assets/mall1.jpg')",
+        backgroundImage: "url('/assets/mall1.jpg')",
       }}
     >
       <div className="bg-white/90 backdrop-blur-md border border-[#D9E2EC] shadow-xl rounded-xl w-full max-w-md p-8">

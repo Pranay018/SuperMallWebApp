@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import useAuth from '../hooks/useAuth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -14,8 +16,8 @@ const Login = () => {
     try {
       const API = import.meta.env.VITE_API_BASE_URL;
       const { data } = await axios.post(`${API}/auth/login`, { email, password });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/dashboard');
+      login(data); // set user in context
+      navigate('/dashboard'); // navigate after login
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }

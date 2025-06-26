@@ -12,7 +12,8 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const { data } = await axios.post('/api/auth/login', { email, password });
+      const API = import.meta.env.VITE_API_BASE_URL;
+      const { data } = await axios.post(`${API}/auth/login`, { email, password });
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate('/dashboard');
     } catch (err) {

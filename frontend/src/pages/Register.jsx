@@ -17,16 +17,17 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleRegister = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const { data } = await axios.post('/api/auth/register', formData);
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
-    }
-  };
+  e.preventDefault();
+  setError('');
+  try {
+    const API = import.meta.env.VITE_API_BASE_URL;
+    const { data } = await axios.post(`${API}/auth/register`, formData);
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    navigate('/dashboard');
+  } catch (err) {
+    setError(err.response?.data?.message || 'Registration failed');
+  }
+};
 
   return (
     <div
